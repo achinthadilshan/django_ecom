@@ -1,6 +1,61 @@
-{% extends "store/main.html" %}
-{% load static %}
+{% extends "store/main.html" %} {% load static %} {% block content %}
 
-{% block content %}
-<h3>Cart</h3>
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <a
+          href="{% url 'store' %}"
+          role="button"
+          class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i> Continue Shopping
+        </a>
+        <hr />
+        <div class="d-flex gap-3 align-items-center">
+          <div>Items: <strong>3</strong></div>
+          <div>Total: <strong>20$</strong></div>
+          <div class="flex-fill text-end">
+            <a
+              href="{% url 'checkout' %}"
+              role="button"
+              class="btn btn-success">
+              Checkout
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th scope="col" style="width: 20%;"></th>
+              <th scope="col" style="width: 35%;">Item</th>
+              <th scope="col" style="width: 15%;">Price</th>
+              <th scope="col" style="width: 15%;">Quantity</th>
+              <th scope="col" style="width: 15%;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <img src="https://picsum.photos/300/200" alt="item image" style="height: 80px;">
+              </td>
+              <td>something</td>
+              <td>20$</td>
+              <td>
+                <input type="number"  min="0" name="quantity" class="form-control" style="max-width: 100px;">
+              </td>
+              <td>20$</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock content %}
