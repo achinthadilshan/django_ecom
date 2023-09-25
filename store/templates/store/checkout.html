@@ -87,21 +87,25 @@
             </tr>
           </thead>
           <tbody>
+            {% for item in items %}
             <tr>
               <td>
                 <img
-                  src="https://picsum.photos/300/200"
+                  src="{{item.product.imageURL}}"
                   alt="item image"
                   style="height: 40px" />
               </td>
-              <td>something</td>
-              <td>20$</td>
-              <td>x2</td>
+              <td>{{item.product.name}}</td>
+              <td>${{item.product.price|floatformat:2}}</td>
+              <td>x{{item.quantity}}</td>
             </tr>
+            {% endfor %}
           </tbody>
         </table>
-        <div>Items: <strong>5</strong></div>
-        <div>Total: <strong>100$</strong></div>
+        <div>Items: <strong>{{order.get_cart_items}}</strong></div>
+        <div>
+          Total: <strong>${{order.get_cart_total|floatformat:2}}</strong>
+        </div>
       </div>
     </div>
   </div>
