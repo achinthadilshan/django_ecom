@@ -21,6 +21,14 @@
       defer></script>
 
     <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    <script src="{% static "js/cart.js" %}" defer></script>
+    <script>     
+      {% if request.user.is_authenticated %}
+        const user = true
+      {% else %}
+        const user = false
+      {% endif %}
+    </script>
   </head>
   <body>
     <!-- Navbar -->
@@ -50,7 +58,7 @@
               <span
                 id="cart-total"
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                0
+                {{cartItems}}
                 <span class="visually-hidden">cart</span>
               </span>
             </a>

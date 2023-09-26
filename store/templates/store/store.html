@@ -12,7 +12,7 @@
         <h5 class="card-title">{{product.name}}</h5>
         <hr />
         <div class="d-flex gap-1 align-items-center">
-          <button type="button" class="btn btn-success">Add to cart</button>
+          <button data-product="{{product.id}}" data-action="add" type="button" class="btn btn-success update-cart">Add to cart</button>
           <button type="button" class="btn btn-outline-secondary">View</button>
           <h6 class="ms-auto m-0">${{product.price|floatformat:2}}</h6>
         </div>
