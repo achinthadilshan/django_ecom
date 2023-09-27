@@ -135,32 +135,5 @@
   </div>
 </div>
 
-<script>
-  const submitFormData = () => {
-    console.log('Payment button clicked...')
-
-    const total = '{{order.get_cart_total|floatformat:2}}'
-
-    {% if not request.user.is_authenticated %}
-    const userFormData = {
-      'name': form.name.value ? form.name.value : null
-      'email': form.email.value ? form.email.value : null
-      'total': total
-    }
-    {% endif %}
-
-    {% if order.shipping %}
-    const shippingInfo = {
-      'address': form.address.value ? form.address.value : null
-      'city': form.city.value ? form.city.value : null
-      'state': form.state.value ? form.state.value : null
-      'zipcode': form.zipcode.value ? form.zipcode.value : null
-    }
-    {% endif %}
-
-    processOrder(userFormData, shippingInfo)
-  }
-</script>
-
 <script src="{% static '/js/checkout.js' %}" defer></script>
 {% endblock content %}
