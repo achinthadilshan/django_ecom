@@ -2,9 +2,12 @@
 
 <div class="row g-3 flex-column-reverse flex-lg-row">
   <div class="col-lg-6">
-    <div class="card">
+    {% if request.user.is_authenticated and order.shipping %}
+
+    <div class="card mb-4">
       <div class="card-body">
         <form id="form" action="">
+          {% if not request.user.is_authenticated %}
           <h5>User Information:</h5>
 
           <div class="row row-cols-1 row-cols-md-2 g-3" id="user-info">
@@ -27,6 +30,7 @@
           </div>
 
           <hr />
+          {% endif %} {% if order.shipping %}
 
           <h5>Shipping Information:</h5>
 
@@ -61,54 +65,102 @@
             </div>
           </div>
 
-          <input type="submit" value="continue" class="btn btn-success w-100" />
+          {% endif %}
+
+          <input
+            type="submit"
+            id="form-btn"
+            value="continue"
+            class="btn btn-success w-100" />
         </form>
       </div>
     </div>
-  </div>
-  <div class="col-lg-6">
-    <div class="card">
-      <div class="card-body">
-        <a
-          href="{% url 'store' %}"
-          role="button"
-          class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-left"></i> Continue Shopping
-        </a>
-        <hr />
-        <h5>Order Summery</h5>
-        <table class="table align-middle">
-          <thead>
-            <tr>
-              <th scope="col" style="width: 20%"></th>
-              <th scope="col" style="width: 35%">Item</th>
-              <th scope="col" style="width: 15%">Price</th>
-              <th scope="col" style="width: 15%">Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in items %}
-            <tr>
-              <td>
-                <img
-                  src="{{item.product.imageURL}}"
-                  alt="item image"
-                  style="height: 40px" />
-              </td>
-              <td>{{item.product.name}}</td>
-              <td>${{item.product.price|floatformat:2}}</td>
-              <td>x{{item.quantity}}</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-        <div>Items: <strong>{{order.get_cart_items}}</strong></div>
-        <div>
-          Total: <strong>${{order.get_cart_total|floatformat:2}}</strong>
+
+    {% endif %} {% if request.user.is_authenticated and not order.shipping %}
+    <div class="card" id="payment-info">
+      {% else %}
+      <div class="card d-none" id="payment-info">
+        {% endif %}
+        <div class="card-body">
+          <h5>Payment Options:</h5>
+          <button type="button" id="make-payment" class="btn btn-primary">
+            Make Payment
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
+          <a
+            href="{% url 'store' %}"
+            role="button"
+            class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Continue Shopping
+          </a>
+          <hr />
+          <h5>Order Summery</h5>
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th scope="col" style="width: 20%"></th>
+                <th scope="col" style="width: 35%">Item</th>
+                <th scope="col" style="width: 15%">Price</th>
+                <th scope="col" style="width: 15%">Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in items %}
+              <tr>
+                <td>
+                  <img
+                    src="{{item.product.imageURL}}"
+                    alt="item image"
+                    style="height: 40px" />
+                </td>
+                <td>{{item.product.name}}</td>
+                <td>${{item.product.price|floatformat:2}}</td>
+                <td>x{{item.quantity}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <div>Items: <strong>{{order.get_cart_items}}</strong></div>
+          <div>
+            Total: <strong>${{order.get_cart_total|floatformat:2}}</strong>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
+<script>
+  const submitFormData = () => {
+    console.log('Payment button clicked...')
+
+    const total = '{{order.get_cart_total|floatformat:2}}'
+
+    {% if not request.user.is_authenticated %}
+    const userFormData = {
+      'name': form.name.value ? form.name.value : null
+      'email': form.email.value ? form.email.value : null
+      'total': total
+    }
+    {% endif %}
+
+    {% if order.shipping %}
+    const shippingInfo = {
+      'address': form.address.value ? form.address.value : null
+      'city': form.city.value ? form.city.value : null
+      'state': form.state.value ? form.state.value : null
+      'zipcode': form.zipcode.value ? form.zipcode.value : null
+    }
+    {% endif %}
+
+    processOrder(userFormData, shippingInfo)
+  }
+</script>
+
+<script src="{% static '/js/checkout.js' %}" defer></script>
 {% endblock content %}
