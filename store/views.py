@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
+import uuid
 
 from .models import *
 
@@ -80,6 +81,32 @@ def updateItem(request):
 
     return JsonResponse({"message": "Successful!"}, safe=True)
 
+
 def processOrder(request):
-    print(request.body)
+    transaction_id = uuid.uuid4()
+    data = json.loads(request.body)
+
+    if request.user.is_authenticated:
+        customer = request.user.customer
+        order, created = Order.objects.get_or_create(
+            customer=customer, complete=False)
+        total = float(data['userData']['total'])
+        order.transaction_id = transaction_id
+
+        if total == float(order.get_cart_total):
+            order.complete = True
+
+        order.save()
+
+        if order.shipping == True:
+            ShippingAddress.objects.create(
+                customer=customer,
+                order=order,
+                address=data['shippingData']['address'],
+                city=data['shippingData']['city'],
+                state=data['shippingData']['state'],
+                zipcode=data['shippingData']['zipcode']
+            )
+    else:
+        print('User is not logged in...')
     return JsonResponse({"message": "Payment complete!"}, safe=True)
